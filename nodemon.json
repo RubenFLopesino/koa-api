@@ -1,0 +1,6 @@
+{
+  "watch": ["src"],
+  "ext": "ts,json",
+  "ignore": ["src/**/*.spec.ts"],
+  "exec": "tsc-watch --onSuccess \"node --inspect=5858 --env-file=.env -r ts-node/register ./dist/app.js\""
+}
