@@ -7,7 +7,8 @@
     "dev": "nodemon",
     "dev:js": "tsc-watch --onSuccess \"node dist/server.js\" ",
     "build": "tsc dist/settings",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "",
@@ -32,9 +33,16 @@
     "@types/koa-router": "^7.4.8",
     "@types/koa2-cors": "^2.0.5",
     "@types/uuid": "^10.0.0",
+    "husky": "^9.1.4",
+    "lint-staged": "^15.2.9",
     "nodemon": "^3.1.4",
+    "prettier": "^3.3.3",
     "ts-node": "^10.9.2",
     "tsc-watch": "^6.2.0",
     "typescript": "^5.5.4"
+  },
+  "lint-staged": {
+    "*.{,ts,json,js,css,md}": "prettier --write",
+    "*.{js,css,md}": "prettier --write"
   }
 }
