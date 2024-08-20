@@ -3,31 +3,37 @@ import koa from "koa";
 import { Server } from "http";
 import bodyParser from "koa-bodyparser";
 import cors from "koa2-cors";
-import Router from "koa-router";
 import jwt from "koa-jwt";
+import { UserController } from "../routes/users/user.controller";
 
 export class AppServer {
   private static _app: Application;
 
   static initServer(): Server {
-    // custom 401 handling
     this.app.use(async (ctx, next) => {
       try {
         await next();
       } catch (error) {
-        if (error.status === 401) {
-          ctx.status = 401;
-          ctx.body = {
-            error: 401,
-            message: "Not Authorized",
-          };
-        } else {
-          throw error;
+        switch (error.status) {
+          case 401:
+            ctx.body = {
+              error: 401,
+              message: "Not Authorized",
+            };
+            break;
+          default:
+            ctx.status = 500;
+            ctx.body = {
+              error: 500,
+              message: error.message,
+            };
+            break;
         }
       }
     });
     this.useMiddleware(cors());
     this.useMiddleware(bodyParser());
+    this.useControllers();
     return this.app.listen(process.env["PORT"], async () => {
       console.log(`Listening on ${process.env["PORT"]}`);
     });
@@ -37,10 +43,9 @@ export class AppServer {
     this.app.use(middleware);
   }
 
-  static addRoute(router: Router): void {
-    this.app.use(router.routes());
+  private static useControllers(): void {
+    this.app.use(UserController.routes);
   }
-
   static get secureRoute(): jwt.Middleware {
     return jwt({ secret: process.env["SECRET_KEY"] as string });
   }
